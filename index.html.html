@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanctuary Intake Line</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap');
+
+  :root {
+    --cream: #FBF6EB;
+    --card: #FFFFFF;
+    --moss: #46603A;
+    --moss-dark: #33472A;
+    --mustard: #E0A83E;
+    --barnwood: #6B4423;
+    --charcoal: #2C2A26;
+    --ink-soft: #5A564C;
+    --alert: #B23A2E;
+    --alert-bg: #FBEAE7;
+    --soon-bg: #FCF3DE;
+    --soon: #8A5E16;
+    --calm-bg: #E9F1E4;
+    --calm: #3B5730;
+    --line: #E4DCC8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    color: var(--charcoal);
+    min-height: 100vh;
+    padding: 20px 14px 60px;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  .masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .masthead h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--moss-dark);
+    margin: 0;
+  }
+
+  .tabs { display: flex; gap: 8px; }
+
+  .tab-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 2px solid var(--moss);
+    background: var(--card);
+    color: var(--moss-dark);
+    cursor: pointer;
+  }
+  .tab-btn.active { background: var(--moss); color: #fff; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 24px;
+  }
+
+  .trail { display: flex; gap: 6px; justify-content: center; margin-bottom: 22px; }
+  .paw { font-size: 20px; opacity: 0.25; }
+  .paw.done { opacity: 1; }
+
+  .step-label {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--barnwood);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .question {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    text-align: center;
+    color: var(--charcoal);
+    margin: 0 0 22px;
+    line-height: 1.35;
+  }
+
+  .field {
+    width: 100%;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 19px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: #FEFCF6;
+    margin-bottom: 8px;
+  }
+  .field:focus { outline: none; border-color: var(--moss); }
+  textarea.field { min-height: 110px; resize: vertical; }
+
+  .hint { text-align: center; color: var(--ink-soft); font-size: 15px; margin: -2px 0 20px; }
+
+  .choice-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+
+  .choice-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: #FEFCF6;
+    color: var(--charcoal);
+    cursor: pointer;
+    text-align: left;
+  }
+  .choice-btn:hover { border-color: var(--moss); }
+  .choice-btn.selected { border-color: var(--moss); background: var(--calm-bg); color: var(--calm); }
+
+  .choice-btn.urgent { border-color: var(--alert); }
+  .choice-btn.urgent.selected { background: var(--alert-bg); color: var(--alert); }
+  .choice-btn.soon.selected { background: var(--soon-bg); color: var(--soon); border-color: var(--mustard); }
+
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 26px; }
+
+  .nav-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    padding: 14px 26px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+  }
+  .nav-btn.back { background: transparent; color: var(--ink-soft); border: 2px solid var(--line); }
+  .nav-btn.next { background: var(--moss); color: #fff; margin-left: auto; }
+  .nav-btn.next:disabled { background: #C9C4B4; cursor: not-allowed; }
+  .nav-btn.submit { background: var(--mustard); color: var(--barnwood); margin-left: auto; }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 17px;
+  }
+  .summary-row span:first-child { color: var(--ink-soft); }
+  .summary-row span:last-child { font-weight: 700; text-align: right; max-width: 60%; }
+
+  .success-box { text-align: center; padding: 20px 0; }
+  .success-box .big-icon { font-size: 48px; margin-bottom: 10px; }
+  .success-box h2 { font-family: 'Fredoka', sans-serif; color: var(--moss-dark); }
+  .ticket-id { font-family: 'Fredoka', sans-serif; font-size: 20px; color: var(--barnwood); margin: 6px 0 22px; }
+
+  .board-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .board-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .board-title { font-weight: 700; font-size: 17px; }
+  .board-meta { color: var(--ink-soft); font-size: 14px; margin-top: 4px; }
+  .badge { font-family: 'Fredoka', sans-serif; font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .badge.emergency { background: var(--alert-bg); color: var(--alert); }
+  .badge.soon { background: var(--soon-bg); color: var(--soon); }
+  .badge.calm { background: var(--calm-bg); color: var(--calm); }
+
+  .status-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .status-btn {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #FEFCF6;
+    cursor: pointer;
+  }
+  .status-btn.current { background: var(--moss); color: #fff; border-color: var(--moss); }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--moss);
+    background: var(--card);
+    color: var(--moss-dark);
+    cursor: pointer;
+  }
+  .filter-btn.active { background: var(--moss); color: #fff; }
+
+  .empty { text-align: center; color: var(--ink-soft); padding: 40px 0; font-size: 17px; }
+  .loading { text-align: center; color: var(--ink-soft); padding: 40px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <h1>&#128062; Sanctuary Intake Line</h1>
+    <div class="tabs">
+      <button class="tab-btn active" id="tabLog">Log a call</button>
+      <button class="tab-btn" id="tabBoard">View tickets</button>
+    </div>
+  </div>
+
+  <div id="logView" class="card"></div>
+  <div id="boardView" class="card" style="display:none;"></div>
+</div>
+
+<script>
+const STEPS = ['volunteer','caller','category','location','urgency','notes','confirm'];
+let stepIndex = 0;
+let ticket = { volunteer:'', callerName:'', callerPhone:'', category:'', location:'', urgency:'', notes:'' };
+
+const CATEGORIES = [
+  'Injured or sick animal',
+  'Stray or loose animal',
+  'Owner surrender',
+  'Nuisance or trapped animal',
+  'General question',
+  'Other'
+];
+
+const URGENCY = [
+  { key: 'Emergency', desc: 'Animal is in immediate danger', cls: 'urgent' },
+  { key: 'Needs help soon', desc: 'Should be handled today', cls: 'soon' },
+  { key: 'Not urgent', desc: 'Can wait a day or more', cls: '' }
+];
+
+function trailHtml() {
+  return '<div class="trail">' + STEPS.slice(0,6).map((s,i) =>
+    '<span class="paw ' + (i <= stepIndex ? 'done' : '') + '">&#128062;</span>'
+  ).join('') + '</div>';
+}
+
+function renderLog() {
+  const el = document.getElementById('logView');
+  const step = STEPS[stepIndex];
+  let body = '';
+
+  if (step === 'volunteer') {
+    body = `
+      <div class="step-label">Step 1 of 6</div>
+      <div class="question">What's your name?</div>
+      <div class="hint">So we know who took this call.</div>
+      <input class="field" id="inp" placeholder="Your first and last name" value="${ticket.volunteer}">
+      <div class="nav-row"><span></span><button class="nav-btn next" id="nextBtn">Next</button></div>`;
+  } else if (step === 'caller') {
+    body = `
+      <div class="step-label">Step 2 of 6</div>
+      <div class="question">Who's calling in?</div>
+      <div class="hint">Name and phone number, if they gave one.</div>
+      <input class="field" id="inpName" placeholder="Caller's name" value="${ticket.callerName}" style="margin-bottom:12px;">
+      <input class="field" id="inpPhone" placeholder="Phone number (optional)" value="${ticket.callerPhone}">
+      <div class="nav-row"><button class="nav-btn back" id="backBtn">Back</button><button class="nav-btn next" id="nextBtn">Next</button></div>`;
+  } else if (step === 'category') {
+    body = `
+      <div class="step-label">Step 3 of 6</div>
+      <div class="question">What's this about?</div>
+      <div class="choice-grid">${CATEGORIES.map(c =>
+        `<button class="choice-btn ${ticket.category===c ? 'selected':''}" data-cat="${c}">${c}</button>`
+      ).join('')}</div>
+      <div class="nav-row"><button class="nav-btn back" id="backBtn">Back</button><span></span></div>`;
+  } else if (step === 'location') {
+    body = `
+      <div class="step-label">Step 4 of 6</div>
+      <div class="question">Where is the animal?</div>
+      <div class="hint">Address, cross streets, or a description of the spot.</div>
+      <input class="field" id="inp" placeholder="e.g. Behind the gas station on Route 9" value="${ticket.location}">
+      <div class="nav-row"><button class="nav-btn back" id="backBtn">Back</button><button class="nav-btn next" id="nextBtn">Next</button></div>`;
+  } else if (step === 'urgency') {
+    body = `
+      <div class="step-label">Step 5 of 6</div>
+      <div class="question">How urgent is it?</div>
+      <div class="choice-grid">${URGENCY.map(u =>
+        `<button class="choice-btn ${u.cls} ${ticket.urgency===u.key?'selected':''}" data-urg="${u.key}">${u.key}<br><span style="font-weight:400;font-size:15px;">${u.desc}</span></button>`
+      ).join('')}</div>
+      <div class="nav-row"><button class="nav-btn back" id="backBtn">Back</button><span></span></div>`;
+  } else if (step === 'notes') {
+    body = `
+      <div class="step-label">Step 6 of 6</div>
+      <div class="question">Anything else to add?</div>
+      <div class="hint">Optional. Condition of the animal, what the caller said, etc.</div>
+      <textarea class="field" id="inp" placeholder="Notes (optional)">${ticket.notes}</textarea>
+      <div class="nav-row"><button class="nav-btn back" id="backBtn">Back</button><button class="nav-btn next" id="nextBtn">Review</button></div>`;
+  } else if (step === 'confirm') {
+    body = `
+      <div class="step-label">Almost done</div>
+      <div class="question">Does this look right?</div>
+      <div class="summary-row"><span>Logged by</span><span>${escapeHtml(ticket.volunteer)||'—'}</span></div>
+      <div class="summary-row"><span>Caller</span><span>${escapeHtml(ticket.callerName)||'—'} ${ticket.callerPhone ? '('+escapeHtml(ticket.callerPhone)+')':''}</span></div>
+      <div class="summary-row"><span>About</span><span>${escapeHtml(ticket.category)||'—'}</span></div>
+      <div class="summary-row"><span>Location</span><span>${escapeHtml(ticket.location)||'—'}</span></div>
+      <div class="summary-row"><span>Urgency</span><span>${escapeHtml(ticket.urgency)||'—'}</span></div>
+      <div class="summary-row"><span>Notes</span><span>${escapeHtml(ticket.notes)||'—'}</span></div>
+      <div class="nav-row"><button class="nav-btn back" id="backBtn">Back</button><button class="nav-btn submit" id="submitBtn">Submit ticket</button></div>`;
+  } else if (step === 'done') {
+    body = `
+      <div class="success-box">
+        <div class="big-icon">&#9989;</div>
+        <h2>Ticket created</h2>
+        <div class="ticket-id">#${ticket.id}</div>
+        <div class="hint" style="margin-bottom:24px;">Someone on the team will follow up on this.</div>
+        <button class="nav-btn next" id="newTicketBtn" style="margin:0 auto;">Log another call</button>
+      </div>`;
+  }
+
+  el.innerHTML = (step !== 'done' ? trailHtml() : '') + body;
+  attachLogHandlers(step);
+}
+
+function escapeHtml(s) {
+  return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function attachLogHandlers(step) {
+  const backBtn = document.getElementById('backBtn');
+  if (backBtn) backBtn.onclick = () => { stepIndex--; renderLog(); };
+
+  const nextBtn = document.getElementById('nextBtn');
+  if (nextBtn) nextBtn.onclick = () => {
+    if (step === 'volunteer') ticket.volunteer = document.getElementById('inp').value.trim();
+    if (step === 'caller') {
+      ticket.callerName = document.getElementById('inpName').value.trim();
+      ticket.callerPhone = document.getElementById('inpPhone').value.trim();
+    }
+    if (step === 'location') ticket.location = document.getElementById('inp').value.trim();
+    if (step === 'notes') ticket.notes = document.getElementById('inp').value.trim();
+    stepIndex++;
+    renderLog();
+  };
+
+  if (step === 'category') {
+    document.querySelectorAll('[data-cat]').forEach(b => {
+      b.onclick = () => { ticket.category = b.dataset.cat; stepIndex++; renderLog(); };
+    });
+  }
+
+  if (step === 'urgency') {
+    document.querySelectorAll('[data-urg]').forEach(b => {
+      b.onclick = () => { ticket.urgency = b.dataset.urg; stepIndex++; renderLog(); };
+    });
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) submitBtn.onclick = submitTicket;
+
+  const newTicketBtn = document.getElementById('newTicketBtn');
+  if (newTicketBtn) newTicketBtn.onclick = () => {
+    ticket = { volunteer: ticket.volunteer, callerName:'', callerPhone:'', category:'', location:'', urgency:'', notes:'' };
+    stepIndex = 0;
+    renderLog();
+  };
+}
+
+async function submitTicket() {
+  const id = Date.now().toString().slice(-6);
+  ticket.id = id;
+  ticket.status = 'New';
+  ticket.createdAt = new Date().toISOString();
+  try {
+    await window.storage.set('ticket:' + id, JSON.stringify(ticket), true);
+  } catch (e) {
+    console.error('Storage error', e);
+  }
+  stepIndex = STEPS.length;
+  renderLog();
+}
+
+async function renderBoard() {
+  const el = document.getElementById('boardView');
+  el.innerHTML = '<div class="loading">Loading tickets…</div>';
+  let tickets = [];
+  try {
+    const list = await window.storage.list('ticket:', true);
+    if (list && list.keys && list.keys.length) {
+      const results = await Promise.all(list.keys.map(async k => {
+        try {
+          const r = await window.storage.get(k, true);
+          return r ? JSON.parse(r.value) : null;
+        } catch { return null; }
+      }));
+      tickets = results.filter(Boolean);
+    }
+  } catch (e) {
+    console.error('Load error', e);
+  }
+
+  tickets.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const filter = el.dataset.filter || 'All';
+  const filtered = filter === 'All' ? tickets : tickets.filter(t => t.status === filter);
+
+  const filterRow = `<div class="filter-row">${['All','New','In progress','Resolved'].map(f =>
+    `<button class="filter-btn ${filter===f?'active':''}" data-filter="${f}">${f}</button>`
+  ).join('')}</div>`;
+
+  const badgeClass = u => u === 'Emergency' ? 'emergency' : u === 'Needs help soon' ? 'soon' : 'calm';
+
+  const cards = filtered.length ? filtered.map(t => `
+    <div class="board-card">
+      <div class="board-top">
+        <div>
+          <div class="board-title">${escapeHtml(t.category)||'Untitled'} — ${escapeHtml(t.location)||'no location given'}</div>
+          <div class="board-meta">Caller: ${escapeHtml(t.callerName)||'—'} ${t.callerPhone ? '· '+escapeHtml(t.callerPhone):''}</div>
+          <div class="board-meta">Logged by ${escapeHtml(t.volunteer)||'—'} · #${t.id}</div>
+          ${t.notes ? `<div class="board-meta">${escapeHtml(t.notes)}</div>` : ''}
+        </div>
+        <span class="badge ${badgeClass(t.urgency)}">${escapeHtml(t.urgency)}</span>
+      </div>
+      <div class="status-row">
+        ${['New','In progress','Resolved'].map(s =>
+          `<button class="status-btn ${t.status===s?'current':''}" data-id="${t.id}" data-status="${s}">${s}</button>`
+        ).join('')}
+      </div>
+    </div>
+  `).join('') : '<div class="empty">No tickets here.</div>';
+
+  el.innerHTML = filterRow + cards;
+  el.dataset.filter = filter;
+
+  el.querySelectorAll('[data-filter]').forEach(b => {
+    b.onclick = () => { el.dataset.filter = b.dataset.filter; renderBoard(); };
+  });
+  el.querySelectorAll('[data-status]').forEach(b => {
+    b.onclick = async () => {
+      const t = tickets.find(x => x.id === b.dataset.id);
+      if (!t) return;
+      t.status = b.dataset.status;
+      try {
+        await window.storage.set('ticket:' + t.id, JSON.stringify(t), true);
+      } catch (e) { console.error(e); }
+      renderBoard();
+    };
+  });
+}
+
+document.getElementById('tabLog').onclick = () => {
+  document.getElementById('tabLog').classList.add('active');
+  document.getElementById('tabBoard').classList.remove('active');
+  document.getElementById('logView').style.display = 'block';
+  document.getElementById('boardView').style.display = 'none';
+};
+document.getElementById('tabBoard').onclick = () => {
+  document.getElementById('tabBoard').classList.add('active');
+  document.getElementById('tabLog').classList.remove('active');
+  document.getElementById('boardView').style.display = 'block';
+  document.getElementById('logView').style.display = 'none';
+  renderBoard();
+};
+
+renderLog();
+</script>
+</body>
+</html>
